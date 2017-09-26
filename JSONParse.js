@@ -1,5 +1,5 @@
 exports.parseJSON = function(JSONInput) {
-	console.log(JSONInput.slice(0, 4));
+	return parseNull(JSONInput);
 }
 
 function parseNull(JSONInput) {
@@ -11,12 +11,4 @@ function parseNull(JSONInput) {
 			}		
 }
 
-function parseNull(JSONInput) {
-	for(let i = 0; i < JSONInput.length - 1; i++) 
-		if(JSONInput[i] == 'n') 
-			if(JSONInput.slice(i, i+4) == 'true')	{
-				JSONInput = JSONInput.slice(i+4,JSONInput.length);
-				return [null,JSONInput];
-			}		
-}
 
