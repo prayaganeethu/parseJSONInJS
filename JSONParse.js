@@ -1,6 +1,6 @@
 
 exports.parseJSON = function(JSONInput) {
-	return parseNum(JSONInput);
+	return parseString(JSONInput);
 }
 
 function parseNull(JSONInput) {
@@ -34,8 +34,9 @@ function parseFalse(JSONInput)	{
 }
 
 function parseNum(JSONInput)	{
-	let num = "",reg = new RegExp('^[0-9]+'),match = reg.exec(JSONInput), i = match.index;
+	let num = "",reg = new RegExp('^[0-9]+'),match = reg.exec(JSONInput); 
 	if (match != null) {
+		i = match.index;
     	while(reg.test(JSONInput[i]))	{
     		num += JSONInput[i];
     		i++;
@@ -45,3 +46,18 @@ function parseNum(JSONInput)	{
     }
     return null;
 }
+
+function parseString(JSONInput)	{
+	let string = "",match = /\S/.exec(JSONInput); 
+	if (match != null) {
+		i = match.index + 1;
+    	while(JSONInput[i] != '"')	{
+    		string += JSONInput[i];
+    		i++;
+    	}
+    	JSONInput = JSONInput.slice(i+1,JSONInput.length);
+    	return [string, JSONInput];
+    }
+    return null;
+}
+
