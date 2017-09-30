@@ -46,18 +46,15 @@ function parseNum(JSONInput)	{
 }	
 
 function parseString(JSONInput)	{	
-	let string = "",match = /"(\S)+"/.exec(JSONInput); 
-	if (match != null) {
-		console.log("String")
-		i = match.index + 1;
-    	while(JSONInput[i] != '"')	{
-    		string += JSONInput[i];
-    		i++;
-    	}
-    	JSONInput = JSONInput.slice(i+1);
-    	return [string, JSONInput];
-    }
-    return null;
+	let string = "", i = 1;
+	if (JSONInput[0] != '"') return null;
+	console.log("String")
+	while(JSONInput[i] != '"')	{
+		string += JSONInput[i];
+		i++;
+	}
+	JSONInput = JSONInput.slice(i+2);
+	return [string, JSONInput];
 }
 
 function parseArray(JSONInput)	{
