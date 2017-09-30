@@ -46,7 +46,7 @@ function parseNum(JSONInput)	{
 }	
 
 function parseString(JSONInput)	{	
-	let string = "", i = 1;
+	let string = '', i = 1;
 	if (JSONInput[0] != '"') return null;
 	console.log("String")
 	while(JSONInput[i] != '"')	{
@@ -63,17 +63,44 @@ function parseArray(JSONInput)	{
 	console.log("Array")		
 	while (JSONInput[0] !== "]") 	{
 		val = parseValue(JSONInput.slice(1));
-		// console.log(val);
 		if (val == null) return null;
 		arr.push(val[0]);
-		// console.log(arr);
 		if (parseComma(val[1]) != null)
 			JSONInput = parseComma(val[1]);
 		else
 			JSONInput = val[1];			
-	}
-	// console.log([arr, JSONInput])	
+	}	
 	return [arr, JSONInput];
+}
+
+function parseObject(JSONInput)	{
+	if(JSONInput[0] != "{") return null;
+	let obj = {}, strng, value, val1, val2;
+	console.log("Object")		
+	while (JSONInput[0] !== "}") 	{
+		val1 = parseValue(JSONInput.slice(1));
+		if (val1 == null) return null;
+		strng = val1[0];	
+		if (parseColon(val1[1]) != null)
+			JSONInput = parseColon(val1[1]);
+		else
+			JSONInput = val1[1];	
+		val2 = parseValue(JSONInput);
+		if (val2 == null) return null;
+		value = val2[0];
+		obj[strng] = value;
+		if (parseComma(val2[1]) != null)
+			JSONInput = parseComma(val2[1]);
+		else
+			JSONInput = val2[1];			
+	}	
+	return [obj, JSONInput];
+}
+
+function parseColon(JSONInput)	{
+	if (JSONInput[0] == ":")
+		return JSONInput.slice(1);
+	return null;
 }
 
 function parseComma(JSONInput)	{
@@ -82,7 +109,7 @@ function parseComma(JSONInput)	{
 	return null;
 }
 
-let parseValue = factoryParsers(parseNull, parseTrue, parseFalse, parseNum, parseString, parseArray);
+let parseValue = factoryParsers(parseNull, parseTrue, parseFalse, parseNum, parseString, parseArray, parseObject);
 
 
 function factoryParsers(...parsers)	{
