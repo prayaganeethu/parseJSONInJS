@@ -33,19 +33,17 @@ function parseFalse(JSONInput)	{
 }
 
 function parseNum(JSONInput)	{	
-	let num = "",reg = new RegExp('^[0-9]+'),match = reg.exec(JSONInput); 
-	if (match != null) {
-		console.log("Number")
-		i = match.index;
-    	while(reg.test(JSONInput[i]))	{
-    		num += JSONInput[i];
-    		i++;
-    	}
-    	JSONInput = JSONInput.slice(i);
-    	return [num, JSONInput];
-    }
-    return null;
-}
+	let num ="", reg = new RegExp('^[0-9]+'), match = reg.exec(JSONInput), i = 0; 
+	if (match == null || match.index != 0) return null;
+	console.log("Number")
+	while(reg.test(JSONInput[i]))	{
+		num += JSONInput[i];
+		i++;
+	}
+	num = parseFloat(num);
+	JSONInput = JSONInput.slice(i);
+	return [num, JSONInput];    
+}	
 
 function parseString(JSONInput)	{	
 	let string = "",match = /"(\S)+"/.exec(JSONInput); 
