@@ -1,10 +1,3 @@
-
-exports.parseJSON = function(JSONInput) {
-	let value;
-	value = parseValue(JSONInput);
-	return value[0];
-}
-
 function parseNull(JSONInput) {	
 	if(JSONInput.slice(0, 4) == 'null')	{
 		console.log("Null")
@@ -52,33 +45,38 @@ function parseString(JSONInput)	{
 	while(JSONInput[i] != '"')	{
 		string += JSONInput[i];
 		i++;
-	}
-	JSONInput = JSONInput.slice(i+2);
+	}	
+	JSONInput = JSONInput.slice(i+1);
+	console.log(JSONInput);
 	return [string, JSONInput];
 }
 
 function parseArray(JSONInput)	{
 	if(JSONInput[0] != "[") return null;
 	let arr = [], val;
+	JSONInput = JSONInput.slice(1);
 	console.log("Array")		
 	while (JSONInput[0] !== "]") 	{
-		val = parseValue(JSONInput.slice(1));
+		val = parseValue(JSONInput);
 		if (val == null) return null;
 		arr.push(val[0]);
+		console.log(arr);
 		if (parseComma(val[1]) != null)
 			JSONInput = parseComma(val[1]);
 		else
-			JSONInput = val[1];			
+			JSONInput = val[1];
+		console.log(JSONInput);			
 	}	
-	return [arr, JSONInput];
+	return [arr, JSONInput.slice(1)];
 }
 
 function parseObject(JSONInput)	{
 	if(JSONInput[0] != "{") return null;
 	let obj = {}, strng, value, val1, val2;
+	JSONInput = JSONInput.slice(1);
 	console.log("Object")		
 	while (JSONInput[0] !== "}") 	{
-		val1 = parseValue(JSONInput.slice(1));
+		val1 = parseValue(JSONInput);
 		if (val1 == null) return null;
 		strng = val1[0];	
 		if (parseColon(val1[1]) != null)
@@ -94,7 +92,7 @@ function parseObject(JSONInput)	{
 		else
 			JSONInput = val2[1];			
 	}	
-	return [obj, JSONInput];
+	return [obj, JSONInput.slice(1)];
 }
 
 function parseColon(JSONInput)	{
@@ -109,9 +107,6 @@ function parseComma(JSONInput)	{
 	return null;
 }
 
-let parseValue = factoryParsers(parseNull, parseTrue, parseFalse, parseNum, parseString, parseArray, parseObject);
-
-
 function factoryParsers(...parsers)	{
 	return function(In)	{
 		for(let i = 0; i < parsers.length; i++)	{
@@ -120,4 +115,11 @@ function factoryParsers(...parsers)	{
 		}
 		return null;
 	}
+}
+
+let parseValue = factoryParsers(parseNull, parseTrue, parseFalse, parseNum, parseString, parseArray, parseObject);
+
+exports.parseJSON = function(JSONInput) {
+	let value = parseValue(JSONInput);
+	return value[0];
 }
