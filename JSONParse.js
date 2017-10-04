@@ -1,7 +1,7 @@
 function parseNull(JSONInput) {	
 	JSONInput = JSONInput.replace(/\s*n\s*u\s*l\s*l\s*/g,"null");
 	if(JSONInput.slice(0, 4) == 'null')	{
-		console.log("Null")
+		// console.log("Null")
 		JSONInput = JSONInput.slice(4);
 		return [null, JSONInput];
 	}
@@ -11,7 +11,7 @@ function parseNull(JSONInput) {
 function parseTrue(JSONInput) {	
 	JSONInput = JSONInput.replace(/\s*t\s*r\s*u\s*e\s*/g,"true");
 	if(JSONInput.slice(0, 4) == 'true')	{
-		console.log("True")
+		// console.log("True")
 		JSONInput = JSONInput.slice(4);
 		return [true, JSONInput];
 	}
@@ -21,7 +21,7 @@ function parseTrue(JSONInput) {
 function parseFalse(JSONInput)	{
 	JSONInput = JSONInput.replace(/\s*f\s*a\s*l\s*s\s*e\s*/g,"false");	
 	if(JSONInput.slice(0, 5) == 'false')	{
-		console.log("False")
+		// console.log("False")
 		JSONInput = JSONInput.slice(5);
 		return [false, JSONInput];
 	}
@@ -36,9 +36,9 @@ function parseNum(JSONInput)	{
 	if (match == null || match.index != 0) 
 		return null;	
 	let i = match.index, numb = "";
-	console.log("Number");
-	// console.log(JSONInput)
-	while (/^-?[0-9]*(.[0-9]+)?([eE][+-]?[0-9]+)?/.test(JSONInput[i]) && JSONInput[i] != undefined)	{
+	// console.log("Number");
+	// console.log("HEY",JSONInput)
+	while (/^-?[0-9]*(.[0-9]+)?([eE][+-]?[0-9]+)?$/.test(JSONInput[i]) && JSONInput[i] != undefined)	{
 		numb += JSONInput[i].toString();
 		// console.log(numb);
 		i++;
@@ -54,13 +54,13 @@ function parseNum(JSONInput)	{
 function parseString(JSONInput)	{	
 	let string = '', i = 1;
 	if (JSONInput[0] != '"') return null;
-	console.log("String")
+	// console.log("String")
 	while(JSONInput[i] != '"')	{
 		string += JSONInput[i];
 		i++;
 	}	
 	JSONInput = JSONInput.slice(i+1);
-	console.log(JSONInput);
+	// console.log(JSONInput);
 	return [string, JSONInput];
 }
 
@@ -68,18 +68,22 @@ function parseArray(JSONInput)	{
 	if(JSONInput[0] != "[") return null;
 	let arr = [], val;
 	JSONInput = JSONInput.slice(1);
-	console.log("Array")		
+	// console.log("Array")		
 	while (JSONInput[0] !== "]") 	{
 		val = parseValue(JSONInput);
+		// console.log("VAL",val);
 		if (val == null) return null;
 		arr.push(val[0]);
-		console.log(arr);
+		// console.log("Arr",arr);
 		if (parseComma(val[1]) != null)
 			JSONInput = parseComma(val[1]);
-		else
+		else {
+			// console.log("ELSE",val[1])
 			JSONInput = val[1];
-		console.log(JSONInput);			
+		}
+		// console.log(JSONInput);			
 	}	
+	// console.log("hello",[arr, JSONInput.slice(1)]);
 	return [arr, JSONInput.slice(1)];
 }
 
@@ -87,7 +91,7 @@ function parseObject(JSONInput)	{
 	if(JSONInput[0] != "{") return null;
 	let obj = {}, strng, value, val1, val2;
 	JSONInput = JSONInput.slice(1);
-	console.log("Object")		
+	// console.log("Object")		
 	while (JSONInput[0] !== "}") 	{
 		val1 = parseValue(JSONInput);
 		if (val1 == null) return null;
@@ -137,9 +141,12 @@ function factoryParsers(...parsers)	{
 let parseValue = factoryParsers(parseNull, parseTrue, parseFalse, parseNum, parseString, parseArray, parseObject);
 
 exports.parseJSON = function(JSONInput) {
-	let value = parseValue(JSONInput);
+	let value = parseValue(parseSpace(JSONInput));
+	// console.log(parseSpace(JSONInput));
 	if (value != null)
 		return value[0];
-	else
+	else {
+		// console.log(value)
 		return "Bad Luck";
+	}
 }
