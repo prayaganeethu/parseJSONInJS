@@ -2,8 +2,8 @@ let JSONPars = require('./JSONParse.js');
 
 var fs = require('fs');
 
-fs.readFile('./JSONData', 'utf8', function(err, contents) {
-    console.log(JSONPars.parseJSON(contents));
+fs.readFile(process.argv[2], 'utf8', function(err, contents) {
+    console.log(JSON.stringify(JSONPars.parseJSON(contents),null,4));
 });
 
 
