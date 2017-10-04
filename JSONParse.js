@@ -1,4 +1,5 @@
 function parseNull(JSONInput) {	
+	JSONInput = JSONInput.replace(/\s*n\s*u\s*l\s*l\s*/g,"null");
 	if(JSONInput.slice(0, 4) == 'null')	{
 		console.log("Null")
 		JSONInput = JSONInput.slice(4);
@@ -8,6 +9,7 @@ function parseNull(JSONInput) {
 }
 
 function parseTrue(JSONInput) {	
+	JSONInput = JSONInput.replace(/\s*t\s*r\s*u\s*e\s*/g,"true");
 	if(JSONInput.slice(0, 4) == 'true')	{
 		console.log("True")
 		JSONInput = JSONInput.slice(4);
@@ -16,7 +18,8 @@ function parseTrue(JSONInput) {
 	return null;		
 }
 
-function parseFalse(JSONInput)	{	
+function parseFalse(JSONInput)	{
+	JSONInput = JSONInput.replace(/\s*f\s*a\s*l\s*s\s*e\s*/g,"false");	
 	if(JSONInput.slice(0, 5) == 'false')	{
 		console.log("False")
 		JSONInput = JSONInput.slice(5);
@@ -26,16 +29,26 @@ function parseFalse(JSONInput)	{
 }
 
 function parseNum(JSONInput)	{	
-	let num ="", reg = new RegExp('^[0-9]+'), match = reg.exec(JSONInput), i = 0; 
-	if (match == null || match.index != 0) return null;
-	console.log("Number")
-	while(reg.test(JSONInput[i]))	{
-		num += JSONInput[i];
+	let reg = new RegExp('^-?[0-9]+(.[0-9]+)?([eE][+-]?[0-9]+)?'); 
+	let match = reg.exec(JSONInput);
+	// console.log("hello");
+	// console.log(match);
+	if (match == null || match.index != 0) 
+		return null;	
+	let i = match.index, numb = "";
+	console.log("Number");
+	// console.log(JSONInput)
+	while (/^-?[0-9]*(.[0-9]+)?([eE][+-]?[0-9]+)?/.test(JSONInput[i]) && JSONInput[i] != undefined)	{
+		numb += JSONInput[i].toString();
+		// console.log(numb);
 		i++;
+		// console.log(JSONInput[i]);
 	}
-	num = parseFloat(num);
+	// console.log(numb);
+	numb = parseFloat(numb);
 	JSONInput = JSONInput.slice(i);
-	return [num, JSONInput];    
+	// console.log([numb, JSONInput]);
+	return [numb, JSONInput];    
 }	
 
 function parseString(JSONInput)	{	
@@ -107,6 +120,10 @@ function parseComma(JSONInput)	{
 	return null;
 }
 
+function parseSpace(JSONInput)	{
+	return JSONInput.replace(/\s+/g,"");
+}
+
 function factoryParsers(...parsers)	{
 	return function(In)	{
 		for(let i = 0; i < parsers.length; i++)	{
@@ -121,5 +138,8 @@ let parseValue = factoryParsers(parseNull, parseTrue, parseFalse, parseNum, pars
 
 exports.parseJSON = function(JSONInput) {
 	let value = parseValue(JSONInput);
-	return value[0];
+	if (value != null)
+		return value[0];
+	else
+		return "Bad Luck";
 }
