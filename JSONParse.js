@@ -52,23 +52,16 @@ function parseObject(JSONInput)	{
 }
 
 function parseColon(JSONInput)	{
-	if (JSONInput[0] == ":")
-		return JSONInput.slice(1);
-	return null;
+	return (JSONInput[0] == ":") ? JSONInput.slice(1) : null;
 }
 
 function parseComma(JSONInput)	{
-	if (JSONInput[0] == ",")
-		return JSONInput.slice(1);
-	return null;
+	return (JSONInput[0] == ",") ? JSONInput.slice(1) : null;
 }
 
 function parseSpace(JSONInput)	{
 	return JSONInput.replace(/([^"]+)|("[^"]+")/g, function($0, $1, $2) {
-			    if ($1)
-			        return $1.replace(/\s/g, '');
-			    else
-			    	return $2;
+			    return ($1) ? $1.replace(/\s/g, '') : $2;
 			});
 }
 
