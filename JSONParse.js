@@ -14,16 +14,10 @@ function parseNum(JSONInput)	{
 }	
 
 function parseString(JSONInput)	{	
-	let string = "", i = 1;
+	let string = "", i;
 	if (JSONInput[0] != '"') return null;
-	// console.log("S");
-	while(JSONInput[i] != '"')	{
-		string += JSONInput[i];
-		i++;
-	}
-	JSONInput = JSONInput.slice(i+1);
-	// console.log([string, JSONInput]);
-	return [string, JSONInput];
+	for (i = 1; JSONInput[i] != '"'; i++) string += JSONInput[i];
+	return [string, JSONInput.slice(i+1)];
 }
 
 function parseArray(JSONInput)	{
