@@ -1,9 +1,5 @@
 function parseNull(JSONInput) {	
-	if(JSONInput.slice(0, 4) == 'null')	{
-		JSONInput = JSONInput.slice(4);
-		return [null, JSONInput];
-	}
-	return null;		
+	return (JSONInput.slice(0, 4) == 'null') ? [null, JSONInput.slice(4)] : null;
 }
 
 function parseTrue(JSONInput) {	
