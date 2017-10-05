@@ -2,20 +2,8 @@ function parseNull(JSONInput) {
 	return (JSONInput.slice(0, 4) == 'null') ? [null, JSONInput.slice(4)] : null;
 }
 
-function parseTrue(JSONInput) {	
-	if(JSONInput.slice(0, 4) == 'true')	{
-		JSONInput = JSONInput.slice(4);
-		return [true, JSONInput];
-	}
-	return null;		
-}
-
-function parseFalse(JSONInput)	{
-	if(JSONInput.slice(0, 5) == 'false')	{
-		JSONInput = JSONInput.slice(5);
-		return [false, JSONInput];
-	}
-	return null;		
+function parseBoolean(JSONInput) {	
+	return (JSONInput.slice(0, 4) == 'true') ? [true, JSONInput.slice(4)] : ((JSONInput.slice(0, 5) == 'false') ? [false, JSONInput.slice(5)] : null);
 }
 
 function parseNum(JSONInput)	{	
@@ -119,7 +107,7 @@ function factoryParsers(...parsers)	{
 	}
 }
 
-let parseValue = factoryParsers(parseNull, parseTrue, parseFalse, parseNum, parseString, parseArray, parseObject);
+let parseValue = factoryParsers(parseNull, parseBoolean, parseNum, parseString, parseArray, parseObject);
 
 exports.parseJSON = function(JSONInput) {
 	let value = parseValue(parseSpace(JSONInput));
