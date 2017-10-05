@@ -21,43 +21,32 @@ function parseString(JSONInput)	{
 }
 
 function parseArray(JSONInput)	{
-	if(JSONInput[0] != "[") return null;
-	let arr = [], val;
-	JSONInput = JSONInput.slice(1);	
+	if (JSONInput[0] !== "[") return null;
+	JSONInput = JSONInput.slice(1);
+	let arr = [], val;		
 	while (JSONInput[0] !== "]") 	{
 		val = parseValue(JSONInput);
 		if (val == null) return null;
 		arr.push(val[0]);
-		if (parseComma(val[1]) != null)
-			JSONInput = parseComma(val[1]);
-		else {
-			JSONInput = val[1];
-		}		
+		JSONInput = (parseComma(val[1]) != null) ? parseComma(val[1]) : val[1];
 	}
 	return [arr, JSONInput.slice(1)];
 }
 
 function parseObject(JSONInput)	{
 	if(JSONInput[0] != "{") return null;
-	// console.log("Obj");
 	let obj = {}, strng, value, val1, val2;
 	JSONInput = JSONInput.slice(1);
 	while (JSONInput[0] !== "}") 	{
 		val1 = parseValue(JSONInput);
 		if (val1 == null) return null;
 		strng = val1[0];	
-		if (parseColon(val1[1]) != null)
-			JSONInput = parseColon(val1[1]);
-		else
-			JSONInput = val1[1];	
+		JSONInput = (parseColon(val1[1]) != null) ? parseColon(val1[1]) : val1[1];
 		val2 = parseValue(JSONInput);
 		if (val2 == null) return null;
 		value = val2[0];
 		obj[strng] = value;
-		if (parseComma(val2[1]) != null)
-			JSONInput = parseComma(val2[1]);
-		else
-			JSONInput = val2[1];			
+		JSONInput = (parseComma(val2[1]) != null) ? parseComma(val2[1]) : val2[1];		
 	}	
 	return [obj, JSONInput.slice(1)];
 }
