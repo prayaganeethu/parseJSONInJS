@@ -7,17 +7,20 @@ function parseBoolean(JSONInput) {
 }
 
 function parseNum(JSONInput)	{
-	let match = /^-?[0-9]+(.[0-9]+)?([eE][+-]?[0-9]+)?/.exec(JSONInput), numb = "", i;
+	let match = /^[-+]?[0-9]+(.[0-9]+([eE][-+]?[0-9]+)?)?/.exec(JSONInput), numb = "", i;
 	if (match == null || match.index != 0) return null;	
-	if(/[0-9]+\s[0-9]+/.test(JSONInput)) throw "Number format incorrect";
-	for (i = match.index ; /^-?[0-9]*(.[0-9]+)?([eE][+-]?[0-9]+)?$/.test(JSONInput[i]) && JSONInput[i] != undefined; i++) numb += JSONInput[i].toString();
+	for (i = match.index ; /[-+0-9.eE]/.test(JSONInput[i]) && JSONInput[i] != undefined; i++) numb += JSONInput[i].toString();
 	return [parseFloat(numb), JSONInput.slice(i)];    
 }	
 
 function parseString(JSONInput)	{		
-	let string = "", i;
+	let string = "", i = 1;
 	if (JSONInput[0] != '"') return null;
-	for (i = 1; JSONInput[i] != '"'; i++) string += JSONInput[i];
+	while(true) {
+		if(JSONInput[i-1]!="\\" && JSONInput[i]=='"') break;
+		string += JSONInput[i];
+		i++;
+	}
 	return [string, JSONInput.slice(i+1)];
 }
 
